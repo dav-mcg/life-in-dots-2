@@ -55,16 +55,16 @@ const Name = styled.div`
 
 type Props = {
   isSelecting: boolean;
+  onChange: (newValue: PosterData) => void;
   onChangeIsSelecting: (newIsSelecting: boolean) => void;
-  onUpdate: (newValue: PosterData) => void;
   value: PosterData;
   zoomLevel: ZoomLevel,
 };
 
 const Poster = ({
   isSelecting,
+  onChange,
   onChangeIsSelecting,
-  onUpdate,
   value,
   zoomLevel,
 }: Props) => {
@@ -79,8 +79,8 @@ const Poster = ({
       <Birthday>{value.birthday.format(`${isShowingBirthdayDayOfWeek ? 'dddd ':''}D MMMM YYYY`)}</Birthday>
       <Graph
         isSelecting={isSelecting}
+        onChange={onChange}
         onChangeIsSelecting={onChangeIsSelecting}
-        onUpdate={onUpdate}
         value={value}
         zoomLevel={zoomLevel}
       />

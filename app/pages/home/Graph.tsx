@@ -28,16 +28,16 @@ const Container = styled.div<{
 
 type Props = {
   isSelecting: boolean;
+  onChange: (newValue: PosterData) => void;
   onChangeIsSelecting: (newIsSelecting: boolean) => void;
-  onUpdate: (newValue: PosterData) => void;
   value: PosterData;
   zoomLevel: ZoomLevel,
 };
 
 const Graph = ({
   isSelecting,
+  onChange,
   onChangeIsSelecting,
-  onUpdate,
   value,
   zoomLevel,
 }: Props) => {
@@ -67,7 +67,7 @@ const Graph = ({
         endWeek: entry.weekNumber,
       };
 
-      onUpdate({
+      onChange({
         ...value,
         selection: newSelection,
       });
@@ -83,7 +83,7 @@ const Graph = ({
         startWeek: entry.weekNumber,
       };
 
-      onUpdate({
+      onChange({
         ...value,
         selection: newSelection,
       });

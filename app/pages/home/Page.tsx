@@ -21,8 +21,8 @@ const Page = () => {
     <Container>
       <Poster
         isSelecting={isSelecting}
+        onChange={setPosterData}
         onChangeIsSelecting={setIsSelecting}
-        onUpdate={setPosterData}
         value={posterData}
         zoomLevel={zoomLevel}
       />
