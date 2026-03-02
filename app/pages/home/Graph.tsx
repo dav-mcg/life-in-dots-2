@@ -28,8 +28,6 @@ const Container = styled.div<{
 
 const Graph = () => {
   const {
-    isSelecting,
-    setValue,
     setIsSelecting,
     value,
     zoomLevel,
@@ -46,52 +44,10 @@ const Graph = () => {
   }, [handleSelectionEnd]);
 
   const renderGraphSegment = (entry: GraphEntry) => {
-    const selection = value.selection;
-    const isSelected = !!selection
-          && entry.weekNumber >= Math.min(selection.startWeek, selection.endWeek)
-          && entry.weekNumber <= Math.max(selection.startWeek, selection.endWeek);
-
-    const handleSelectionContinue = () => {
-      if (!isSelecting || !selection) {
-        return;
-      }
-
-      const newSelection = {
-        ...selection,
-        endWeek: entry.weekNumber,
-      };
-
-      setValue({
-        ...value,
-        selection: newSelection,
-      });
-    };
-
-    const handleSelectionStart = () => {
-      if (!isSelecting) {
-        return;
-      }
-
-      const newSelection = {
-        endWeek: entry.weekNumber,
-        startWeek: entry.weekNumber,
-      };
-
-      setValue({
-        ...value,
-        selection: newSelection,
-      });
-    };
-
     return (
       <GraphSegment
-        isSelected={isSelected}
-        isSelecting={isSelecting}
-        onSelectionContinue={handleSelectionContinue}
-        onSelectionStart={handleSelectionStart}
         key={entry.weekNumber}
         value={entry}
-        zoomLevel={zoomLevel}
       />
     );
   };
