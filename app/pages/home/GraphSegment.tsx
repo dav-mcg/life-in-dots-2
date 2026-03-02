@@ -94,7 +94,7 @@ const GraphSegment = ({
     && value.weekNumber >= Math.min(selection.startWeek, selection.endWeek)
     && value.weekNumber <= Math.max(selection.startWeek, selection.endWeek);
 
-  const handleSelectionContinue = () => {
+  const handleSelectionContinue = useCallback(() => {
     if (!isSelecting || !selection) {
       return;
     }
@@ -108,9 +108,9 @@ const GraphSegment = ({
       ...posterValue,
       selection: newSelection,
     });
-  };
+  }, [isSelecting, posterValue, selection, setPosterValue, value.weekNumber]);
 
-  const handleSelectionStart = () => {
+  const handleSelectionStart = useCallback(() => {
     if (!isSelecting) {
       return;
     }
@@ -124,7 +124,7 @@ const GraphSegment = ({
       ...posterValue,
       selection: newSelection,
     });
-  };
+  }, [isSelecting, posterValue, setPosterValue, value.weekNumber]);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
