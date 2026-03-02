@@ -2,6 +2,7 @@ import { type PointerEventHandler, useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import type GraphEntry from '~/data/GraphEntry';
 import type ZoomLevel from './ZoomLevel';
+import usePosterContext from './usePosterContext';
 
 export const getSizePx = (zoomLevel: ZoomLevel): number => {
   switch(zoomLevel) {
@@ -74,29 +75,64 @@ const Container = styled.div<{
 `;
 
 type Props = {
-  isSelected: boolean,
-  isSelecting: boolean,
-  onSelectionContinue: () => void,
-  onSelectionStart: () => void,
   value: GraphEntry,
-  zoomLevel: ZoomLevel,
 };
 
 const GraphSegment = ({
-  isSelected,
-  isSelecting,
-  onSelectionContinue,
-  onSelectionStart,
   value,
-  zoomLevel,
 }: Props) => {
+  const {
+    isSelecting,
+    setValue: setPosterValue,
+    value: posterValue,
+    zoomLevel,
+  } = usePosterContext();
+
+
+  const selection = posterValue.selection;
+  const isSelected = !!selection
+    && value.weekNumber >= Math.min(selection.startWeek, selection.endWeek)
+    && value.weekNumber <= Math.max(selection.startWeek, selection.endWeek);
+
+  const handleSelectionContinue = useCallback(() => {
+    if (!isSelecting || !selection) {
+      return;
+    }
+
+    const newSelection = {
+      ...selection,
+      endWeek: value.weekNumber,
+    };
+
+    setPosterValue({
+      ...posterValue,
+      selection: newSelection,
+    });
+  }, [isSelecting, posterValue, selection, setPosterValue, value.weekNumber]);
+
+  const handleSelectionStart = useCallback(() => {
+    if (!isSelecting) {
+      return;
+    }
+
+    const newSelection = {
+      endWeek: value.weekNumber,
+      startWeek: value.weekNumber,
+    };
+
+    setPosterValue({
+      ...posterValue,
+      selection: newSelection,
+    });
+  }, [isSelecting, posterValue, setPosterValue, value.weekNumber]);
+
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handlePointerDown: PointerEventHandler<HTMLDivElement> = useCallback((event) => {
     containerRef?.current?.releasePointerCapture(event.pointerId);
 
-    onSelectionStart();
-  }, [onSelectionStart]);
+    handleSelectionStart();
+  }, [handleSelectionStart]);
 
   const renderValue = () => {
     if (value.isBirthWeek) {
@@ -116,7 +152,7 @@ const GraphSegment = ({
       $isSelecting={isSelecting}
       $zoomLevel={zoomLevel}
       $value={value}
-      onPointerMove={onSelectionContinue}
+      onPointerMove={handleSelectionContinue}
       onPointerDown={handlePointerDown}
       ref={containerRef}
     >
