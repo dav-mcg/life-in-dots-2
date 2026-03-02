@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import type PosterData from '~/data/PosterData';
 import useFeatureFlag from '~/utils/featureFlags/useFeatureFlag';
 import Graph from './Graph';
+import PosterProvider from './PosterProvider';
 import type ZoomLevel from './ZoomLevel';
 
 const getMaxWidthPx = (zoomLevel: ZoomLevel) : number => {
@@ -72,19 +73,27 @@ const Poster = ({
   const isShowingSparkles = useFeatureFlag('Sparkles');
 
   return (
-    <Container
-      $zoomLevel={zoomLevel}
+    <PosterProvider
+      isSelecting={isSelecting}
+      onChange={onChange}
+      onChangeIsSelecting={onChangeIsSelecting}
+      value={value}
+      zoomLevel={zoomLevel}
     >
-      <Name>{isShowingSparkles && '✨'}{value.name}{isShowingSparkles && '✨'}</Name>
-      <Birthday>{value.birthday.format(`${isShowingBirthdayDayOfWeek ? 'dddd ':''}D MMMM YYYY`)}</Birthday>
-      <Graph
-        isSelecting={isSelecting}
-        onChange={onChange}
-        onChangeIsSelecting={onChangeIsSelecting}
-        value={value}
-        zoomLevel={zoomLevel}
-      />
-    </Container>
+      <Container
+        $zoomLevel={zoomLevel}
+      >
+        <Name>{isShowingSparkles && '✨'}{value.name}{isShowingSparkles && '✨'}</Name>
+        <Birthday>{value.birthday.format(`${isShowingBirthdayDayOfWeek ? 'dddd ':''}D MMMM YYYY`)}</Birthday>
+        <Graph
+          isSelecting={isSelecting}
+          onChange={onChange}
+          onChangeIsSelecting={onChangeIsSelecting}
+          value={value}
+          zoomLevel={zoomLevel}
+        />
+      </Container>
+    </PosterProvider>
   );
 };
 
