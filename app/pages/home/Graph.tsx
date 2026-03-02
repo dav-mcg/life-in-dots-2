@@ -1,9 +1,9 @@
 import { useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 import type GraphEntry from '~/data/GraphEntry';
-import type PosterData from '~/data/PosterData';
 import GraphSegment, { getSizePx as getGraphSegmentSizePx } from './GraphSegment';
 import type ZoomLevel from './ZoomLevel';
+import usePosterContext from './usePosterContext';
 
 const Container = styled.div<{
   $zoomLevel: ZoomLevel,
@@ -26,24 +26,18 @@ const Container = styled.div<{
   border-radius: 24px;
 `;
 
-type Props = {
-  isSelecting: boolean;
-  onChange: (newValue: PosterData) => void;
-  onChangeIsSelecting: (newIsSelecting: boolean) => void;
-  value: PosterData;
-  zoomLevel: ZoomLevel,
-};
+const Graph = () => {
+  const {
+    isSelecting,
+    setValue,
+    setIsSelecting,
+    value,
+    zoomLevel,
+  } = usePosterContext();
 
-const Graph = ({
-  isSelecting,
-  onChange,
-  onChangeIsSelecting,
-  value,
-  zoomLevel,
-}: Props) => {
   const handleSelectionEnd = useCallback(() => {
-    onChangeIsSelecting(false);
-  }, [onChangeIsSelecting]);
+    setIsSelecting(false);
+  }, [setIsSelecting]);
 
   useEffect(() => {
     document.addEventListener('pointerup', handleSelectionEnd);
@@ -67,7 +61,7 @@ const Graph = ({
         endWeek: entry.weekNumber,
       };
 
-      onChange({
+      setValue({
         ...value,
         selection: newSelection,
       });
@@ -83,7 +77,7 @@ const Graph = ({
         startWeek: entry.weekNumber,
       };
 
-      onChange({
+      setValue({
         ...value,
         selection: newSelection,
       });

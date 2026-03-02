@@ -85,13 +85,7 @@ const Poster = ({
       >
         <Name>{isShowingSparkles && '✨'}{value.name}{isShowingSparkles && '✨'}</Name>
         <Birthday>{value.birthday.format(`${isShowingBirthdayDayOfWeek ? 'dddd ':''}D MMMM YYYY`)}</Birthday>
-        <Graph
-          isSelecting={isSelecting}
-          onChange={onChange}
-          onChangeIsSelecting={onChangeIsSelecting}
-          value={value}
-          zoomLevel={zoomLevel}
-        />
+        <Graph />
       </Container>
     </PosterProvider>
   );
