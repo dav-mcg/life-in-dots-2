@@ -1,6 +1,5 @@
 import { useCallback, useEffect } from 'react';
 import styled from 'styled-components';
-import type GraphEntry from '~/data/GraphEntry';
 import GraphSegment, { getSizePx as getGraphSegmentSizePx } from './GraphSegment';
 import type ZoomLevel from './ZoomLevel';
 import usePosterContext from './usePosterContext';
@@ -43,21 +42,19 @@ const Graph = () => {
     return () => document.removeEventListener('pointerup', handleSelectionEnd);
   }, [handleSelectionEnd]);
 
-  const renderGraphSegment = (entry: GraphEntry) => {
-    return (
-      <GraphSegment
-        key={entry.weekNumber}
-        value={entry}
-      />
-    );
-  };
-
   return (
     <Container
       $zoomLevel={zoomLevel}
     >
       {
-        value.graphData.map(renderGraphSegment)
+        value.graphData.map((entry) => {
+          return (
+            <GraphSegment
+              key={entry.weekNumber}
+              value={entry}
+            />
+          );
+        })
       }
     </Container>
   );
