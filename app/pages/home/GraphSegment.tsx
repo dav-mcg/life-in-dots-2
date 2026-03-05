@@ -42,7 +42,8 @@ const Container = styled.div<{
   user-select: none;
 
   --size: ${({$zoomLevel}) => getSizePx($zoomLevel)}px;
-
+  --border-radius: ${({$zoomLevel}) => getSizePx($zoomLevel)/4}px;
+  
   width: var(--size);
   height: var(--size);
   font-size: var(--size);
@@ -91,6 +92,23 @@ const Container = styled.div<{
   ${({$isSelected, $neighborInfo}) => $isSelected && $neighborInfo?.bottomIsSelected === false && `
     border-bottom: 2px solid black;
   `}
+
+  ${({$isSelected, $neighborInfo}) => $isSelected && $neighborInfo?.topIsSelected === false && $neighborInfo?.leftIsSelected === false && `
+    border-top-left-radius: var(--border-radius);
+  `}
+
+  ${({$isSelected, $neighborInfo}) => $isSelected && $neighborInfo?.topIsSelected === false && $neighborInfo?.rightIsSelected === false && `
+    border-top-right-radius: var(--border-radius);
+  `}
+
+  ${({$isSelected, $neighborInfo}) => $isSelected && $neighborInfo?.bottomIsSelected === false && $neighborInfo?.leftIsSelected === false && `
+    border-bottom-left-radius: var(--border-radius);
+  `}
+
+  ${({$isSelected, $neighborInfo}) => $isSelected && $neighborInfo?.bottomIsSelected === false && $neighborInfo?.rightIsSelected === false && `
+    border-bottom-right-radius: var(--border-radius);
+  `}
+
 `;
 
 type Props = {
