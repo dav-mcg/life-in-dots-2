@@ -1,6 +1,7 @@
 import { type PointerEventHandler, useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import type GraphEntry from '~/data/GraphEntry';
+import getIsGraphEntrySelected from '~/data/getIsGraphEntrySelected';
 import type ZoomLevel from './ZoomLevel';
 import usePosterContext from './usePosterContext';
 
@@ -90,9 +91,10 @@ const GraphSegment = ({
 
 
   const selection = posterValue.selection;
-  const isSelected = !!selection
-    && value.weekNumber >= Math.min(selection.startWeek, selection.endWeek)
-    && value.weekNumber <= Math.max(selection.startWeek, selection.endWeek);
+  const isSelected = getIsGraphEntrySelected({
+    graphEntry: value,
+    selection: posterValue.selection,
+  });
 
   const handleSelectionContinue = useCallback(() => {
     if (!isSelecting || !selection) {
