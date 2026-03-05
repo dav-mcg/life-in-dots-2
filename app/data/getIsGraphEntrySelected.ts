@@ -10,10 +10,14 @@ const getIsGraphEntrySelected = ({
   selection,
   graphEntry,
 }: Input) => {
-  return  !!selection
-    && graphEntry.weekNumber >= Math.min(selection.startWeek, selection.endWeek)
+  if (!selection) {
+    return false;
+  }
+
+  const result = graphEntry.weekNumber >= Math.min(selection.startWeek, selection.endWeek)
     && graphEntry.weekNumber <= Math.max(selection.startWeek, selection.endWeek);
 
+  return result;
 };
 
 export default getIsGraphEntrySelected;
