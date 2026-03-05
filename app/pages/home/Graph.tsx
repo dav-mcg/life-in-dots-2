@@ -1,5 +1,7 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import styled from 'styled-components';
+import useFeatureFlag from '~/utils/featureFlags/useFeatureFlag';
+import useResizeObserver from '~/utils/useResizeObserver';
 import GraphSegment, { getSizePx as getGraphSegmentSizePx } from './GraphSegment';
 import type ZoomLevel from './ZoomLevel';
 import usePosterContext from './usePosterContext';
@@ -26,11 +28,52 @@ const Container = styled.div<{
 `;
 
 const Graph = () => {
+  const isHighlightingOutline = useFeatureFlag('Outline Highlight');
   const {
     setIsSelecting,
     value,
     zoomLevel,
   } = usePosterContext();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const {
+    setNumberOfDisplayedColumns,
+  } = usePosterContext();
+
+  const countColumns = useCallback(() => {
+    if (!isHighlightingOutline) {
+      return;
+    }
+
+    const container = containerRef.current;
+
+    if (!container) {
+      return;
+    }
+
+    const firstGraphEntry = container.getElementsByTagName('div')[0];
+
+    if (!firstGraphEntry) {
+      return;
+    }
+
+    const containerStyle = getComputedStyle(container);
+
+    const containerWidth = Math.ceil(
+      container.clientWidth
+      - parseFloat(containerStyle.paddingLeft)
+      - parseFloat(containerStyle.paddingRight)
+    );
+    const graphEntryWidth = firstGraphEntry.clientWidth;
+    const newNumberOfColumns = Math.max(
+      Math.floor(containerWidth / graphEntryWidth),
+      1
+    );
+
+    setNumberOfDisplayedColumns(newNumberOfColumns);
+  }, [isHighlightingOutline, setNumberOfDisplayedColumns]);
+
+  useEffect(countColumns, [countColumns]);
+  useResizeObserver(containerRef, countColumns);
 
   const handleSelectionEnd = useCallback(() => {
     setIsSelecting(false);
@@ -45,6 +88,7 @@ const Graph = () => {
   return (
     <Container
       $zoomLevel={zoomLevel}
+      ref={isHighlightingOutline ? containerRef : null}
     >
       {
         value.graphData.map((entry) => {
