@@ -14,6 +14,7 @@ const Container = styled.main`
 
 const Page = () => {
   const [isSelecting, setIsSelecting] = useState<boolean>(false);
+  const [numberOfDisplayedColumns, setNumberOfDisplayedColumns] = useState<number | null>(null);
   const [posterData, setPosterData] = usePosterData();
   const [zoomLevel, setZoomLevel] = useZoomLevel();
 
@@ -21,7 +22,9 @@ const Page = () => {
     <Container>
       <Poster
         isSelecting={isSelecting}
+        numberOfDisplayedColumns={numberOfDisplayedColumns}
         onChange={setPosterData}
+        onChangeNumberOfDisplayedColumns={setNumberOfDisplayedColumns}
         onChangeIsSelecting={setIsSelecting}
         value={posterData}
         zoomLevel={zoomLevel}
