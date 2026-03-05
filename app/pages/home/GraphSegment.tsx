@@ -2,6 +2,7 @@ import { type PointerEventHandler, useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import type GraphEntry from '~/data/GraphEntry';
 import getIsGraphEntrySelected from '~/data/getIsGraphEntrySelected';
+import useNeighborInfo from './GraphSegment.useNeighborInfo';
 import type ZoomLevel from './ZoomLevel';
 import usePosterContext from './usePosterContext';
 
@@ -28,6 +29,7 @@ const Container = styled.div<{
   $value: GraphEntry,
   $isSelected: boolean,
   $isSelecting: boolean,
+  $neighborInfo: ReturnType<typeof useNeighborInfo>,
   $zoomLevel: ZoomLevel,
 }>`
   display: flex;
@@ -73,6 +75,22 @@ const Container = styled.div<{
   ${({$isSelected}) => $isSelected && `
     background-color: orangered;
   `}
+
+  ${({$isSelected, $neighborInfo}) => $isSelected && $neighborInfo?.topIsSelected === false && `
+    border-top: 2px solid black;
+  `}
+
+  ${({$isSelected, $neighborInfo}) => $isSelected && $neighborInfo?.leftIsSelected === false && `
+    border-left: 2px solid black;
+  `}
+
+  ${({$isSelected, $neighborInfo}) => $isSelected && $neighborInfo?.rightIsSelected === false && `
+    border-right: 2px solid black;
+  `}
+
+  ${({$isSelected, $neighborInfo}) => $isSelected && $neighborInfo?.bottomIsSelected === false && `
+    border-bottom: 2px solid black;
+  `}
 `;
 
 type Props = {
@@ -89,12 +107,12 @@ const GraphSegment = ({
     zoomLevel,
   } = usePosterContext();
 
-
   const selection = posterValue.selection;
   const isSelected = getIsGraphEntrySelected({
     graphEntry: value,
     selection: posterValue.selection,
   });
+  const neighborInfo = useNeighborInfo(value);
 
   const handleSelectionContinue = useCallback(() => {
     if (!isSelecting || !selection) {
@@ -152,6 +170,7 @@ const GraphSegment = ({
     <Container
       $isSelected={isSelected}
       $isSelecting={isSelecting}
+      $neighborInfo={neighborInfo}
       $zoomLevel={zoomLevel}
       $value={value}
       onPointerMove={handleSelectionContinue}
