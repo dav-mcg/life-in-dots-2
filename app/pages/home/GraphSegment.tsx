@@ -1,6 +1,8 @@
 import { type PointerEventHandler, useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import type GraphEntry from '~/data/GraphEntry';
+import getIsGraphEntrySelected from '~/data/getIsGraphEntrySelected';
+import useNeighborInfo from './GraphSegment.useNeighborInfo';
 import type ZoomLevel from './ZoomLevel';
 import usePosterContext from './usePosterContext';
 
@@ -27,6 +29,7 @@ const Container = styled.div<{
   $value: GraphEntry,
   $isSelected: boolean,
   $isSelecting: boolean,
+  $neighborInfo: ReturnType<typeof useNeighborInfo>,
   $zoomLevel: ZoomLevel,
 }>`
   display: flex;
@@ -39,7 +42,8 @@ const Container = styled.div<{
   user-select: none;
 
   --size: ${({$zoomLevel}) => getSizePx($zoomLevel)}px;
-
+  --border-radius: ${({$zoomLevel}) => getSizePx($zoomLevel)/4}px;
+  
   width: var(--size);
   height: var(--size);
   font-size: var(--size);
@@ -72,6 +76,39 @@ const Container = styled.div<{
   ${({$isSelected}) => $isSelected && `
     background-color: orangered;
   `}
+
+  ${({$isSelected, $neighborInfo}) => $isSelected && $neighborInfo?.topIsSelected === false && `
+    border-top: 2px solid black;
+  `}
+
+  ${({$isSelected, $neighborInfo}) => $isSelected && $neighborInfo?.leftIsSelected === false && `
+    border-left: 2px solid black;
+  `}
+
+  ${({$isSelected, $neighborInfo}) => $isSelected && $neighborInfo?.rightIsSelected === false && `
+    border-right: 2px solid black;
+  `}
+
+  ${({$isSelected, $neighborInfo}) => $isSelected && $neighborInfo?.bottomIsSelected === false && `
+    border-bottom: 2px solid black;
+  `}
+
+  ${({$isSelected, $neighborInfo}) => $isSelected && $neighborInfo?.topIsSelected === false && $neighborInfo?.leftIsSelected === false && `
+    border-top-left-radius: var(--border-radius);
+  `}
+
+  ${({$isSelected, $neighborInfo}) => $isSelected && $neighborInfo?.topIsSelected === false && $neighborInfo?.rightIsSelected === false && `
+    border-top-right-radius: var(--border-radius);
+  `}
+
+  ${({$isSelected, $neighborInfo}) => $isSelected && $neighborInfo?.bottomIsSelected === false && $neighborInfo?.leftIsSelected === false && `
+    border-bottom-left-radius: var(--border-radius);
+  `}
+
+  ${({$isSelected, $neighborInfo}) => $isSelected && $neighborInfo?.bottomIsSelected === false && $neighborInfo?.rightIsSelected === false && `
+    border-bottom-right-radius: var(--border-radius);
+  `}
+
 `;
 
 type Props = {
@@ -88,11 +125,12 @@ const GraphSegment = ({
     zoomLevel,
   } = usePosterContext();
 
-
   const selection = posterValue.selection;
-  const isSelected = !!selection
-    && value.weekNumber >= Math.min(selection.startWeek, selection.endWeek)
-    && value.weekNumber <= Math.max(selection.startWeek, selection.endWeek);
+  const isSelected = getIsGraphEntrySelected({
+    graphEntry: value,
+    selection: posterValue.selection,
+  });
+  const neighborInfo = useNeighborInfo(value);
 
   const handleSelectionContinue = useCallback(() => {
     if (!isSelecting || !selection) {
@@ -150,6 +188,7 @@ const GraphSegment = ({
     <Container
       $isSelected={isSelected}
       $isSelecting={isSelecting}
+      $neighborInfo={neighborInfo}
       $zoomLevel={zoomLevel}
       $value={value}
       onPointerMove={handleSelectionContinue}

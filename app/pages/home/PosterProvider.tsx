@@ -6,8 +6,10 @@ import type ZoomLevel from './ZoomLevel';
 type Props = {
   children: ReactNode;
   isSelecting: boolean;
+  numberOfDisplayedColumns: number | null;
   onChange: (newValue: PosterData) => void;
   onChangeIsSelecting: (newIsSelecting: boolean) => void;
+  onChangeNumberOfDisplayedColumns: (newNumberOfDisplayedColumns: number | null) => void;
   value: PosterData;
   zoomLevel: ZoomLevel;
 };
@@ -15,8 +17,10 @@ type Props = {
 const PosterProvider = ({
   children,
   isSelecting,
+  numberOfDisplayedColumns,
   onChange,
   onChangeIsSelecting,
+  onChangeNumberOfDisplayedColumns,
   value,
   zoomLevel
 }: Props) => {
@@ -24,17 +28,21 @@ const PosterProvider = ({
   const contextValue = useMemo(() => {
     const result: ContextValue = {
       isSelecting,
+      numberOfDisplayedColumns,
       value,
       setValue: onChange,
       setIsSelecting: onChangeIsSelecting,
+      setNumberOfDisplayedColumns: onChangeNumberOfDisplayedColumns,
       zoomLevel,
     };
 
     return result;
   }, [
     isSelecting,
+    numberOfDisplayedColumns,
     onChange,
     onChangeIsSelecting,
+    onChangeNumberOfDisplayedColumns,
     value,
     zoomLevel,
   ]);

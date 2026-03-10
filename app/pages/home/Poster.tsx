@@ -56,16 +56,20 @@ const Name = styled.div`
 
 type Props = {
   isSelecting: boolean;
+  numberOfDisplayedColumns: number | null;
   onChange: (newValue: PosterData) => void;
   onChangeIsSelecting: (newIsSelecting: boolean) => void;
+  onChangeNumberOfDisplayedColumns: (newNumberOfDisplayedColumns: number | null) => void;
   value: PosterData;
   zoomLevel: ZoomLevel,
 };
 
 const Poster = ({
   isSelecting,
+  numberOfDisplayedColumns,
   onChange,
   onChangeIsSelecting,
+  onChangeNumberOfDisplayedColumns,
   value,
   zoomLevel,
 }: Props) => {
@@ -75,8 +79,10 @@ const Poster = ({
   return (
     <PosterProvider
       isSelecting={isSelecting}
+      numberOfDisplayedColumns={numberOfDisplayedColumns}
       onChange={onChange}
       onChangeIsSelecting={onChangeIsSelecting}
+      onChangeNumberOfDisplayedColumns={onChangeNumberOfDisplayedColumns}
       value={value}
       zoomLevel={zoomLevel}
     >
